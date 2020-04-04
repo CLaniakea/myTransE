@@ -1,0 +1,7 @@
+isFIT
+---正确率---  41.93 %
+HeadHitMeanRank: 3.678200908948441
+
+RAW
+---正确率---  49.67 %
+HeadRawMeanRank: 2.5238050462309984
