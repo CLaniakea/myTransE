@@ -184,42 +184,7 @@ if __name__ == '__main__':
     testHeadRaw = Test(entityList, entityVectorList,
                        relationList, relationVectorList,
                        tripleListTrain, tripleListTest)
-    # testHeadRaw.getRank()#预测尾
-    # print("HeadRawMeanRank:", testHeadRaw.getMeanRank())
-    # testHeadRaw.writeRank("../data/result/" + "testHeadRaw" + ".txt")
-    # print("testHeadRaw---")
     testHeadRaw.getRelationRank()
     print("HeadRawMeanRank:", testHeadRaw.getMeanRank())
     testHeadRaw.writeRank("../data/result/" + "testRelationRaw" + ".txt")
 
-    # testTailRaw = Test(entityList, entityVectorList,
-    #                 relationList, relationVectorList,
-    #                 tripleListTrain, tripleListTest,
-    #                 label = "tail")
-    # testTailRaw.getRank()
-    # print("TailRawMeanRank:", testTailRaw.getMeanRank())
-    # testTailRaw.writeRank("../data/result/" + "testTailRaw" + ".txt")
-    '''
-    isFIT
-    '''
-    # testHeadFit = Test(entityList, entityVectorList,
-    #                 relationList, relationVectorList,
-    #                 tripleListTrain, tripleListTest,
-    #                 isFit = True)
-    # # print("testHeadFit")
-    # # testHeadFit.getRank()
-    # # print("HeadHitMeanRank:", testHeadFit.getMeanRank())
-    # # testHeadFit.writeRank("../data/result/" + "testHeadFit" + ".txt")
-    # #
-    # testHeadFit.getRelationRank()
-    # print("HeadHitMeanRank:", testHeadFit.getMeanRank())
-    # testHeadFit.writeRank("../data/result/" + "testRelationFit" + ".txt")
-
-    # testTailFit = Test(entityList, entityVectorList,
-    #                 relationList, relationVectorList,
-    #                 tripleListTrain, tripleListTest,
-    #                 isFit=True, label="tail")
-    #                 #预测头
-    # testTailFit.getRank()
-    # print("TailHitMeanRank:", testTailFit.getMeanRank())
-    # testTailFit.writeRank("../data/result/" + "testTailFit" + ".txt")
