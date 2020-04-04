@@ -25,23 +25,27 @@ def test(road_name):
     # L = [0, 0, 0, 0, 0]#记录各个路况出现的次数
     L_PLUS = [[0]*5 for i in range(7)]
     count = 0#总路况数
-    f = open(dst_dir, 'a+', encoding = 'UTF-8')
-    for tp in tuple_list:
-        if tp[0] == road_name:
-            temp = list(tp[1].split(' '))[0]
-            week = datetime.strptime(temp, "%Y-%m-%d").weekday() #返回0 - 6
-            # print(weeklist[week])
-            # L[relation2idDict[tp[2]]] += 1
-            L_PLUS[week][relation2idDict[tp[2]]] += 1
-            count += 1
-            tp = tp + tuple(weeklist[week])
-            # break
-    f.write(road_name + '\n')
-    for L in L_PLUS:
-        for x in L:
-            f.write(str(round(x/count, 2)) + '\t')
-        f.write('\n')
-    f.close()
+    # f = open(dst_dir, 'a', encoding = 'UTF-8')
+    with open(dst_dir, 'a', encoding = 'UTF-8') as f:
+        for tp in tuple_list:
+            if tp[0] == road_name:
+                temp = list(tp[1].split(' '))[0]
+                week = datetime.strptime(temp, "%Y-%m-%d").weekday() #返回0 - 6
+                # print(weeklist[week])
+                # L[relation2idDict[tp[2]]] += 1
+                L_PLUS[week][relation2idDict[tp[2]]] += 1
+                count += 1
+                tp = tp + tuple(weeklist[week])
+
+        tempL = []
+        for L in L_PLUS:
+            tempL += L
+            # for x in L:
+            #     x = round(x/count, 2)
+                # f.write(str(round(x/count, 2)) + '\t')
+            # f.write('\n')
+        # print(L_PLUS)
+        f.writelines(road_name + '\t' + str(tempL) + '\t' + str(count) +'\n')
 
 road_list = []# 不重复的路名
 for tp in tuple_list:

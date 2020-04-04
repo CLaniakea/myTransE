@@ -3,7 +3,6 @@ import operator
 import pandas as pd
 import os
 
-
 class Test:
     def __init__(self, entityList, entityVectorList,
                  relationList, relationVectorList,
@@ -164,27 +163,42 @@ def loadData(str):
 
 
 if __name__ == '__main__':
-    dirTrain = "../data/train.txt"
-    tripleNumTrain, tripleListTrain = openD(dirTrain)  # train内容个数 + 元组
-    dirTest = "../data/testlast.txt"#1.15测试
-    # dirTest = "../data/test.txt"#随机测试
-    tripleNumTest, tripleListTest = openD(dirTest)  # test内容个数 + 元组
-    # print("tripleNumTest =", tripleNumTest)
-    # print("tripleListTest =", tripleListTest)
-    dirEntityVector = "../data/result/entityVector.txt"
-    entityVectorList, entityList = loadData(dirEntityVector)  # 前者数据，后者路名
-    # print("entityVectorList =", entityVectorList[0])
-    # print("entityList =", entityList[0])
-    dirRelationVector = "../data/result/relationVector.txt"
-    relationVectorList, relationList = loadData(dirRelationVector)  # 前者数据，后者路况
-    print("START TEST")
-    '''
-    RAW
-    '''
-    testHeadRaw = Test(entityList, entityVectorList,
-                       relationList, relationVectorList,
-                       tripleListTrain, tripleListTest)
-    testHeadRaw.getRelationRank()
-    print("HeadRawMeanRank:", testHeadRaw.getMeanRank())
-    testHeadRaw.writeRank("../data/result/" + "testRelationRaw" + ".txt")
 
+    data_dir = '../data/'
+    peroid_file = 'foundrule.txt'
+    period_dict ={}
+    with open(data_dir + peroid_file, encoding='UTF-8') as fp:
+        reader = fp.readlines()
+        for read in reader:
+            x = read.split('\t')[0]
+            y = [int(s) for s in read.split('\t')[1][1:-1].split(',')]
+            z = int(read.split('\t')[2])
+            y = [round(s/z,2) for s in y]
+            period_dict[x] = y
+    print(period_dict)
+
+    #
+    # dirTrain = "../data/train.txt"
+    # tripleNumTrain, tripleListTrain = openD(dirTrain)  # train内容个数 + 元组
+    # dirTest = "../data/testlast.txt"#1.15测试
+    # # dirTest = "../data/test.txt"#随机测试
+    # tripleNumTest, tripleListTest = openD(dirTest)  # test内容个数 + 元组
+    # # print("tripleNumTest =", tripleNumTest)
+    # # print("tripleListTest =", tripleListTest)
+    # dirEntityVector = "../data/result/entityVector.txt"
+    # entityVectorList, entityList = loadData(dirEntityVector)  # 前者数据，后者路名
+    # # print("entityVectorList =", entityVectorList[0])
+    # # print("entityList =", entityList[0])
+    # dirRelationVector = "../data/result/relationVector.txt"
+    # relationVectorList, relationList = loadData(dirRelationVector)  # 前者数据，后者路况
+    # print("START TEST")
+    # '''
+    # RAW
+    # '''
+    # testHeadRaw = Test(entityList, entityVectorList,
+    #                    relationList, relationVectorList,
+    #                    tripleListTrain, tripleListTest)
+    # testHeadRaw.getRelationRank()
+    # print("HeadRawMeanRank:", testHeadRaw.getMeanRank())
+    # testHeadRaw.writeRank("../data/result/" + "testRelationRaw" + ".txt")
+    #
