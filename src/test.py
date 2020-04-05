@@ -2,6 +2,7 @@ from numpy import *
 import operator
 import pandas as pd
 import os
+from datetime import datetime
 
 class Test:
     def __init__(self, entityList, entityVectorList,
@@ -27,9 +28,33 @@ class Test:
         self.label = label
         self.isFit = isFit
 
+        data_dir = '../data/'
+        peroid_file = 'foundrule.txt'
+        self.period_dict = {}
+        with open(data_dir + peroid_file, encoding='UTF-8') as fp:
+            reader = fp.readlines()
+            for read in reader:
+                x = read.split('\t')[0]
+                y = [int(s) for s in read.split('\t')[1][1:-1].split(',')]
+                z = int(read.split('\t')[2])
+                y = [round(s / z, 5) for s in y]
+                self.period_dict[x] = y
+        #将所有值为 0 的项赋值为非零最小值的 1 倍
+        for ped in self.period_dict:
+            L = self.period_dict[ped]
+            min_val = L[0]
+            for x in L:
+                if x < min_val and x != 0.0:
+                    min_val = x
+            for y in range(len(L)):
+                if L[y] == 0.0:
+                    L[y] = min_val
+            self.period_dict[ped] = L
+
+
     def writeRank(self, dir):
         print("写入")
-        file = open(dir, 'w')
+        file = open(dir, 'w', encoding='UTF-8')
         for r in self.rank:
             file.write(str(r[0]) + "\t")
             file.write(str(r[1]) + "\t")
@@ -98,7 +123,16 @@ class Test:
                 rankList[relationTemp] = distance(self.entityDict[triplet[0]],
                                                   self.entityDict[triplet[1]],
                                                   self.relationDict[relationTemp])
-            nameRank = sorted(rankList.items(), key=operator.itemgetter(1))  # type List
+            # reverse = False
+            # 乘以概率
+            date = str(triplet[1]).split(' ')[0]
+            week = datetime.strptime(date, "%Y-%m-%d").weekday()#获取星期几
+            # rankList = 0
+            temp = 0
+            for rl in rankList:
+                rankList[rl] *= self.period_dict[triplet[0]][week * 5 + temp]
+                temp += 1
+            nameRank = sorted(rankList.items(), key=operator.itemgetter(1), reverse = True)  # type List
             # print(rankList)
             # print(type(rankList))
             x = 1
@@ -163,42 +197,27 @@ def loadData(str):
 
 
 if __name__ == '__main__':
+    dirTrain = "../data/train.txt"
+    tripleNumTrain, tripleListTrain = openD(dirTrain)  # train内容个数 + 元组
+    dirTest = "../data/testlast.txt"#1.15测试
+    # dirTest = "../data/test.txt"#随机测试
+    tripleNumTest, tripleListTest = openD(dirTest)  # test内容个数 + 元组
+    # print("tripleNumTest =", tripleNumTest)
+    # print("tripleListTest =", tripleListTest)
+    dirEntityVector = "../data/result/entityVector.txt"
+    entityVectorList, entityList = loadData(dirEntityVector)  # 前者数据，后者路名
+    # print("entityVectorList =", entityVectorList[0])
+    # print("entityList =", entityList[0])
+    dirRelationVector = "../data/result/relationVector.txt"
+    relationVectorList, relationList = loadData(dirRelationVector)  # 前者数据，后者路况
+    print("START TEST")
+    '''
+    RAW
+    '''
+    testHeadRaw = Test(entityList, entityVectorList,
+                       relationList, relationVectorList,
+                       tripleListTrain, tripleListTest)
+    testHeadRaw.getRelationRank()
+    print("HeadRawMeanRank:", testHeadRaw.getMeanRank())
+    testHeadRaw.writeRank("../data/result/" + "testRelationRaw" + ".txt")
 
-    data_dir = '../data/'
-    peroid_file = 'foundrule.txt'
-    period_dict ={}
-    with open(data_dir + peroid_file, encoding='UTF-8') as fp:
-        reader = fp.readlines()
-        for read in reader:
-            x = read.split('\t')[0]
-            y = [int(s) for s in read.split('\t')[1][1:-1].split(',')]
-            z = int(read.split('\t')[2])
-            y = [round(s/z,2) for s in y]
-            period_dict[x] = y
-    print(period_dict)
-
-    #
-    # dirTrain = "../data/train.txt"
-    # tripleNumTrain, tripleListTrain = openD(dirTrain)  # train内容个数 + 元组
-    # dirTest = "../data/testlast.txt"#1.15测试
-    # # dirTest = "../data/test.txt"#随机测试
-    # tripleNumTest, tripleListTest = openD(dirTest)  # test内容个数 + 元组
-    # # print("tripleNumTest =", tripleNumTest)
-    # # print("tripleListTest =", tripleListTest)
-    # dirEntityVector = "../data/result/entityVector.txt"
-    # entityVectorList, entityList = loadData(dirEntityVector)  # 前者数据，后者路名
-    # # print("entityVectorList =", entityVectorList[0])
-    # # print("entityList =", entityList[0])
-    # dirRelationVector = "../data/result/relationVector.txt"
-    # relationVectorList, relationList = loadData(dirRelationVector)  # 前者数据，后者路况
-    # print("START TEST")
-    # '''
-    # RAW
-    # '''
-    # testHeadRaw = Test(entityList, entityVectorList,
-    #                    relationList, relationVectorList,
-    #                    tripleListTrain, tripleListTest)
-    # testHeadRaw.getRelationRank()
-    # print("HeadRawMeanRank:", testHeadRaw.getMeanRank())
-    # testHeadRaw.writeRank("../data/result/" + "testRelationRaw" + ".txt")
-    #
