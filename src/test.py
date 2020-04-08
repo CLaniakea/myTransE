@@ -199,7 +199,7 @@ def loadData(str):
 if __name__ == '__main__':
     dirTrain = "../data/train.txt"
     tripleNumTrain, tripleListTrain = openD(dirTrain)  # train内容个数 + 元组
-    dirTest = "../data/testlast.txt"#1.15测试
+    dirTest = "../data/test.txt"#1.15测试
     # dirTest = "../data/test.txt"#随机测试
     tripleNumTest, tripleListTest = openD(dirTest)  # test内容个数 + 元组
     # print("tripleNumTest =", tripleNumTest)
